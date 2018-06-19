@@ -66,7 +66,7 @@ public class BusInfo {
         try{
             String inStr = stopID + "?format=json";
             StringBuffer departs = makeHttpRequest(inStr);
-//            testJSON(departs);
+            testJSON(departs);
         }catch(IOException E){
             System.out.println("Failure: getDepartures failed to open url");
         }
