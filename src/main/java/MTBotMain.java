@@ -7,6 +7,6 @@ public class MTBotMain {
     public static void main(String[] args) {
         get("/mtbotmain", (req, res) -> "Hello WorldDDDDDDDDD");
         BusInfo bus = new BusInfo();
-        bus.getDepartures("17025?format=json");
+//        bus.getDepartures("17025?format=json");
     }
 }

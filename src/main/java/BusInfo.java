@@ -23,6 +23,9 @@ public class BusInfo {
         setDepartureTime("unknown departure time");
     }
 
+    //makes an Http request with the input information such as stopid, route, and direction.\
+    //returns stringbuffer that will be handled with (not yet named) method that will be sent to
+    //telegram
     private StringBuffer makeHttpRequest(String inStr) throws IOException {
         URL url = new URL(BUS_URL.concat(inStr));
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -39,6 +42,11 @@ public class BusInfo {
 
     //use the GetRoutes operation
     public String getRoutes(){
+        try {
+            StringBuffer routes = makeHttpRequest("Routes?format=json");
+        } catch (IOException E) {
+            System.out.println("Failure: getRoutes failed to open url");
+        }
         //TODO
         return "";
     }
@@ -47,25 +55,37 @@ public class BusInfo {
     //ONLY LIST NEXT 5 DEPARTURES!
     public String getDepartures(String stopID){
         try{
-
             StringBuffer departs = makeHttpRequest(stopID);
 //            Gson gson = new GsonBuilder().setPrettyPrinting().create();
 //            JsonParser jsonParser = new JsonParser();
 //            JsonElement jsonElement = jsonParser.parse(departs.toString());
 //            System.out.println(gson.toJson(jsonElement));
         }catch(IOException E){
-            System.out.println("failed open");
+            System.out.println("Failure: getDepartures failed to open url");
         }
         //TODO
         return "";
     }
 
     public String getStops(String route, String directions) {
-        //TODO
+        try {
+            String inStr = "Stops/" + route + "/" + directions + "?format=json";
+            StringBuffer stops = makeHttpRequest("inStr");
+        } catch (IOException E) {
+            System.out.println("Failure: getStops failed to open URL");
+        }
+    //TODO
         return "";
     }
 
     public String getDepartureTimes(String route, String directions, String stopID) {
+        try {
+            String inStr = "Stops/" + route + "/" + directions + "/" + stopID + "?format=json";
+            StringBuffer depTimes = makeHttpRequest(inStr);
+        } catch (IOException E) {
+            System.out.println("Failure: getDepartureTimes failed to open URL");
+        }
+
         //TODO
         return "";
     }
