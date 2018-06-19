@@ -1,7 +1,6 @@
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import TwinCitiesTransit.NextTrip;
+import com.google.common.collect.Lists;
+import com.google.gson.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,6 +8,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 
 import static spark.Spark.*;
 
@@ -48,8 +49,19 @@ public class HelloWorld {
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonParser jsonParser = new JsonParser();
-        JsonElement jsonElement = jsonParser.parse(payload.toString());
-        System.out.println(gson.toJson(jsonElement));
+        // use jsonParser to parse text to JsonArray Object, jsonParser returns JsonElement, JsonElement has a getAsJsonArray() method
+        JsonArray jsonArray = (jsonParser.parse(payload.toString())).getAsJsonArray();
+        // now use gson to convert JSON into POJO (Plain old Java Object)
+        NextTrip[] arrayOfTrips = gson.fromJson(jsonArray, NextTrip[].class);
+        // I like lambdas take dumb array to List type
+        List<NextTrip> nextTripList = Arrays.asList(arrayOfTrips);
+
+        //now you can use the information as a java object if you want, I made the date a string because idk how to serialize it off the top of my head
+        // something to note for later
+        // normally in the NextTrip.java file you dont have to do the @SerializedName annotation for every field
+        //but since the api capitalizes their first letter and that is not java convention i decided to keep coding convention
+        //in favour of ease of programming
+        nextTripList.stream().forEach(nt -> System.out.println(nt.getDescription() + "\t" + nt.getDepartureText() + "\n"));
 
     }
 }
