@@ -39,7 +39,6 @@ public class BusInfo {
         return retString;
     }
 
-    //used for testing JSON from Bus Api
 
     //returns a list of specified objects with the input stringbuffer
     private List getNextTripArray(StringBuffer inStr, String type) {
