@@ -1,6 +1,7 @@
 import TwinCitiesTransit.*;
 import com.google.gson.*;
 
+import javax.xml.soap.Text;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -39,6 +40,26 @@ public class BusInfo {
     }
 
     //used for testing JSON from Bus Api
+
+    private List getNextTripArray(StringBuffer inStr, String type) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonParser jsonParser = new JsonParser();
+        if (type.equals("stop")) {
+            JsonArray jsonArr = (jsonParser.parse(inStr.toString())).getAsJsonArray();
+            TextValuePair[] stopsArr = gson.fromJson(jsonArr, TextValuePair[].class);
+            List<TextValuePair> nextStopList = Arrays.asList(stopsArr);
+            setStopsList(nextStopList);
+            return nextStopList;
+        } else if (type.equals("departure")) {
+            JsonArray jsonArray = (jsonParser.parse(inStr.toString())).getAsJsonArray();
+            NextTripDepartures[] departuresArr = gson.fromJson(jsonArray, NextTripDepartures[].class);
+            List<NextTripDepartures> nextTripDepartures = Arrays.asList(departuresArr);
+            setDeparturesList(nextTripDepartures);
+            return nextTripDepartures;
+        } else {
+            return null;
+        }
+    }
     private void testJSON(StringBuffer str) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonParser jsonParser = new JsonParser();
@@ -51,6 +72,7 @@ public class BusInfo {
      *
      *  else pull from local information.
      *
+     * Also must add a string to return!
      */
     public String getRoutes(){
         try {
@@ -69,6 +91,8 @@ public class BusInfo {
      *  else pull from local information.
      *
      * ONLY LIST NEXT 5 DEPARTURES!
+     *
+     * Also must add a string to return!
      */
     public String getDepartures(String stopID){
         try{
@@ -95,18 +119,13 @@ public class BusInfo {
      *
      *  else pull from local information.
      *
+     * Also must add a string to return!
      */
     public String getStops(String route, String directions) {
         try {
             String inStr = "Stops/" + route + "/" + directions + "?format=json";
             StringBuffer stops = makeHttpRequest(inStr);
-
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            JsonParser jsonParser = new JsonParser();
-            JsonArray jsonArr = (jsonParser.parse(stops.toString())).getAsJsonArray();
-            TextValuePair[] stopsArr = gson.fromJson(jsonArr, TextValuePair[].class);
-            List<TextValuePair> nextStopList = Arrays.asList(stopsArr);
-            setStopsList(nextStopList);
+            List<TextValuePair> nextStopList = getNextTripArray(stops, "stop");
 
             nextStopList.stream().forEach(nt -> System.out.println(nt.getText() + "\t" + nt.getValue() + "\n"));
         } catch (IOException e) {
@@ -125,11 +144,14 @@ public class BusInfo {
      */
     public String getDepartureTimes(String route, String directions, String stopID) {
         try {
-            String inStr = "Stops/" + route + "/" + directions + "/" + stopID + "?format=json";
+            String inStr = route + "/" + directions + "/" + stopID + "?format=json";
             StringBuffer depTimes = makeHttpRequest(inStr);
-//            testJSON(depTimes);
-        } catch (IOException E) {
+            List<NextTripDepartures> nextTripDepartures = getNextTripArray(depTimes, "departure");
+
+            nextTripDepartures.stream().forEach(dt -> System.out.println(dt.getDescription() + "\t" + dt.getDepartureText() + "\n"));
+        } catch (IOException e) {
             System.out.println("Failure: getDepartureTimes failed to open URL");
+            e.printStackTrace();
         }
 
         //TODO

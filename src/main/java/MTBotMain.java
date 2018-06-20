@@ -8,8 +8,8 @@ public class MTBotMain {
         get("/mtbotmain", (req, res) -> "Hello WorldDDDDDDDDD");
         BusInfo bus = new BusInfo();
         bus.getDepartures("17025");
-//        bus.getStops("5", "4");
-//        bus.getDepartures("17025");
+        bus.getStops("5", "4");
+        bus.getDepartureTimes("5", "4","7SOL");
 //        bus.getRoutes();
     }
 }
