@@ -1,7 +1,5 @@
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import TwinCitiesTransit.*;
+import com.google.gson.*;
 import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 
 import java.io.BufferedReader;
@@ -10,18 +8,18 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class BusInfo {
-    public final String BUS_URL = "http://svc.metrotransit.org/NexTrip/";
-    private String departureTime;
-    private String routeNum;
-    private String direction;
-    private String stopID;
+    private final String BUS_URL = "http://svc.metrotransit.org/NexTrip/";
+    private List<Departures> departuresList;
+    private int timeSinceLastReq = 0;
+    //the nextTrips and nextInfo variables above store temporary information. If a request is made within the 30s
+    // refresh of the metro transit system, then pointless to try to access new information again. Just pull old/temp
+    //info from these stored variables.
 
-    //BusInfo interacts with metrotransit api to get and store bus information
-    public BusInfo(){
-        setDepartureTime("unknown departure time");
-    }
 
     //makes an Http request with the input information such as stopid, route, and direction.\
     //returns stringbuffer that will be handled with (not yet named) method that will be sent to
@@ -78,13 +76,21 @@ public class BusInfo {
         try {
             String inStr = "Stops/" + route + "/" + directions + "?format=json";
             StringBuffer stops = makeHttpRequest(inStr);
-//            testJSON(stops);
+
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            JsonParser jsonParser = new JsonParser();
+            JsonArray jsonArr = (jsonParser.parse(stops.toString())).getAsJsonArray();
+            NextTrip[] tripArr = gson.fromJson(jsonArr, NextTrip[].class);
+            List<NextTrip> nextTripList = Arrays.asList(tripArr);
+
+
         } catch (IOException E) {
             System.out.println("Failure: getStops failed to open URL");
         }
     //TODO
         return "";
     }
+
 
     public String getDepartureTimes(String route, String directions, String stopID) {
         try {
@@ -99,11 +105,14 @@ public class BusInfo {
         return "";
     }
 
-//    //only used within class, should have no external interference
-    private  void setDepartureTime(String departureTime) {
-        this.departureTime = departureTime;
+    private void setDepartures(List<Departures> departures) {
+        this.departuresList = departures;
     }
 
 
+
+    private void setTimeSinceLastReq(int timeSinceLastReq) {
+        this.timeSinceLastReq = timeSinceLastReq;
+    }
 }
 
