@@ -4,6 +4,12 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by alex.zalewski on 6/19/18.
+ *
+ * Handles response schema 1 with GetDepartures and GetTimePointDepartures operations from
+ * metro transit api.
+ *
+ * URL: http://svc.metrotransit.org/
+ *
  */
 public class NextTripDepartures {
     @SerializedName("Actual")

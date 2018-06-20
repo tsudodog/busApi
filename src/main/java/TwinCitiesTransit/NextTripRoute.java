@@ -5,8 +5,13 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Connor Hanlon on 6/20/2018
+ *
+ * Handles schema 2 with GetRoutes operation from metro transit api.
+ *
+ * URL: http://svc.metrotransit.org/
+ *
  */
-public class NextTripRoutes {
+public class NextTripRoute {
     @SerializedName("Description")
     String description;
 
