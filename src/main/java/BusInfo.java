@@ -12,8 +12,11 @@ import java.util.List;
 public class BusInfo {
     private final String BUS_URL = "http://svc.metrotransit.org/NexTrip/";
     private List<NextTripDepartures> departuresList;
-    private int timeSinceLastReq = 0;
-    //the nextTrips and nextInfo variables above store temporary information. If a request is made within the 30s
+    private List<NextTripRoute> routesList;
+    private List<TextValuePair> directionsList;
+    private List<TextValuePair> stopsList;
+    private int timeSinceLastRequest = 0;
+    //the variables above store temporary info. If a request is made within the 30s
     // refresh of the metro transit system, then pointless to try to access new information again. Just pull old/temp
     //info from these stored variables.
 
@@ -43,11 +46,15 @@ public class BusInfo {
         System.out.println(gson.toJson(jsonElement));
     }
 
-    //use the GetRoutes operation
+    /**  TODO: check the time since last request if time is greater than or equal to 30 seconds,
+     *  then send request.
+     *
+     *  else pull from local information.
+     *
+     */
     public String getRoutes(){
         try {
             StringBuffer routes = makeHttpRequest("Routes?format=json");
-//            testJSON(routes);
         } catch (IOException E) {
             System.out.println("Failure: getRoutes failed to open url");
         }
@@ -55,13 +62,27 @@ public class BusInfo {
         return "";
     }
 
-    //use GetDepartures operation
-    //ONLY LIST NEXT 5 DEPARTURES!
+
+    /**  TODO: check the time since last request if time is greater than or equal to 30 seconds,
+     *  then send request.
+     *
+     *  else pull from local information.
+     *
+     * ONLY LIST NEXT 5 DEPARTURES!
+     */
     public String getDepartures(String stopID){
         try{
             String inStr = stopID + "?format=json";
             StringBuffer departs = makeHttpRequest(inStr);
-            testJSON(departs);
+
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            JsonParser jsonParser = new JsonParser();
+            JsonArray jsonArray = (jsonParser.parse(departs.toString())).getAsJsonArray();
+            NextTripDepartures[] departuresArr = gson.fromJson(jsonArray, NextTripDepartures[].class);
+            List<NextTripDepartures> nextTripDepartures = Arrays.asList(departuresArr);
+            setDeparturesList(nextTripDepartures);
+
+            nextTripDepartures.stream().forEach(dt -> System.out.println(dt.getDescription() + "\t" + dt.getDepartureText() + "\n"));
         }catch(IOException E){
             System.out.println("Failure: getDepartures failed to open url");
         }
@@ -69,6 +90,12 @@ public class BusInfo {
         return "";
     }
 
+    /**  TODO: check the time since last request if time is greater than or equal to 30 seconds,
+     *  then send request.
+     *
+     *  else pull from local information.
+     *
+     */
     public String getStops(String route, String directions) {
         try {
             String inStr = "Stops/" + route + "/" + directions + "?format=json";
@@ -77,18 +104,25 @@ public class BusInfo {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             JsonParser jsonParser = new JsonParser();
             JsonArray jsonArr = (jsonParser.parse(stops.toString())).getAsJsonArray();
-            NextTrip[] tripArr = gson.fromJson(jsonArr, NextTrip[].class);
-            List<NextTrip> nextTripList = Arrays.asList(tripArr);
+            TextValuePair[] stopsArr = gson.fromJson(jsonArr, TextValuePair[].class);
+            List<TextValuePair> nextStopList = Arrays.asList(stopsArr);
+            setStopsList(nextStopList);
 
-
-        } catch (IOException E) {
+            nextStopList.stream().forEach(nt -> System.out.println(nt.getText() + "\t" + nt.getValue() + "\n"));
+        } catch (IOException e) {
             System.out.println("Failure: getStops failed to open URL");
+            e.printStackTrace();
         }
     //TODO
         return "";
     }
 
-
+    /**  TODO: check the time since last request if time is greater than or equal to 30 seconds,
+     *  then send request.
+     *
+     *  else pull from local information.
+     *
+     */
     public String getDepartureTimes(String route, String directions, String stopID) {
         try {
             String inStr = "Stops/" + route + "/" + directions + "/" + stopID + "?format=json";
@@ -102,14 +136,44 @@ public class BusInfo {
         return "";
     }
 
-    private void setDepartures(List<NextTripDepartures> departures) {
-        this.departuresList = departures;
+    public List<NextTripDepartures> getDeparturesList() {
+        return departuresList;
     }
 
+    public void setDeparturesList(List<NextTripDepartures> departuresList) {
+        this.departuresList = departuresList;
+    }
 
+    public List<NextTripRoute> getRoutesList() {
+        return routesList;
+    }
 
-    private void setTimeSinceLastReq(int timeSinceLastReq) {
-        this.timeSinceLastReq = timeSinceLastReq;
+    public void setRoutesList(List<NextTripRoute> routesList) {
+        this.routesList = routesList;
+    }
+
+    public List<TextValuePair> getDirectionsList() {
+        return directionsList;
+    }
+
+    public void setDirectionsList(List<TextValuePair> directionsList) {
+        this.directionsList = directionsList;
+    }
+
+    public List<TextValuePair> getStopsList() {
+        return stopsList;
+    }
+
+    public void setStopsList(List<TextValuePair> stopsList) {
+        this.stopsList = stopsList;
+    }
+
+    public int getTimeSinceLastRequest() {
+        return timeSinceLastRequest;
+    }
+
+    public void setTimeSinceLastRequest(int timeSinceLastRequest) {
+        this.timeSinceLastRequest = timeSinceLastRequest;
     }
 }
 
