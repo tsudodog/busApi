@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Connor Hanlon on 6/20/2018
  */
-public class Routes {
+public class NextTripRoutes {
     @SerializedName("Description")
     String description;
 

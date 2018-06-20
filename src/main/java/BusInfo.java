@@ -1,20 +1,17 @@
 import TwinCitiesTransit.*;
 import com.google.gson.*;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class BusInfo {
     private final String BUS_URL = "http://svc.metrotransit.org/NexTrip/";
-    private List<Departures> departuresList;
+    private List<NextTripDepartures> departuresList;
     private int timeSinceLastReq = 0;
     //the nextTrips and nextInfo variables above store temporary information. If a request is made within the 30s
     // refresh of the metro transit system, then pointless to try to access new information again. Just pull old/temp
@@ -105,7 +102,7 @@ public class BusInfo {
         return "";
     }
 
-    private void setDepartures(List<Departures> departures) {
+    private void setDepartures(List<NextTripDepartures> departures) {
         this.departuresList = departures;
     }
 

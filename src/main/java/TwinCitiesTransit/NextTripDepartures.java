@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by alex.zalewski on 6/19/18.
  */
-public class Departures {
+public class NextTripDepartures {
     @SerializedName("Actual")
     boolean actual;
 
