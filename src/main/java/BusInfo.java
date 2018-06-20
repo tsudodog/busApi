@@ -41,6 +41,7 @@ public class BusInfo {
 
     //used for testing JSON from Bus Api
 
+    //returns a list of specified objects with the input stringbuffer
     private List getNextTripArray(StringBuffer inStr, String type) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonParser jsonParser = new JsonParser();
@@ -62,6 +63,8 @@ public class BusInfo {
             return null;
         }
     }
+
+
     private void testJSON(StringBuffer str) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonParser jsonParser = new JsonParser();
@@ -76,6 +79,28 @@ public class BusInfo {
      *
      * Also must add a string to return!
      */
+    public String getDirections(String route) {
+        try {
+            String inStr = "Directions/" + route + "?format=json";
+            StringBuffer dirs = makeHttpRequest(inStr);
+            List<TextValuePair> directionArr = getNextTripArray(dirs, "stopOrDir");
+            setDirectionsList(directionArr);
+
+            directionArr.stream().forEach(nt -> System.out.println(nt.getText() + "\t" + nt.getValue() + "\n"));
+        } catch (IOException e) {
+            System.out.println("Failure: getDirections failed to open URL.");
+            e.printStackTrace();
+        }
+        return "";
+
+    }
+    /**  TODO: check the time since last request if time is greater than or equal to 30 seconds,
+     *  then send request.
+     *
+     *  else pull from local information.
+     *
+     * Also must add a string to return!
+     */
     public String getRoutes(){
         try {
             StringBuffer routes = makeHttpRequest("Routes?format=json");
@@ -83,8 +108,9 @@ public class BusInfo {
             setRoutesList(nextRoutes);
 
             nextRoutes.stream().forEach(nR -> System.out.println(nR.getDescription() + "\t" + nR.getRoute() + "\n"));
-        } catch (IOException E) {
+        } catch (IOException e) {
             System.out.println("Failure: getRoutes failed to open url");
+            e.printStackTrace();
         }
         //TODO
         return "";
@@ -109,8 +135,9 @@ public class BusInfo {
 
 
             nextTripDepartures.stream().forEach(dt -> System.out.println(dt.getDescription() + "\t" + dt.getDepartureText() + "\n"));
-        }catch(IOException E){
-            System.out.println("Failure: getDepartures failed to open url");
+        }catch(IOException e){
+            System.out.println("Failure: getDepartures failed to open URL.");
+            e.printStackTrace();
         }
         //TODO
         return "";
@@ -132,7 +159,7 @@ public class BusInfo {
 
             nextStopList.stream().forEach(nt -> System.out.println(nt.getText() + "\t" + nt.getValue() + "\n"));
         } catch (IOException e) {
-            System.out.println("Failure: getStops failed to open URL");
+            System.out.println("Failure: getStops failed to open URL.");
             e.printStackTrace();
         }
     //TODO
@@ -154,7 +181,7 @@ public class BusInfo {
 
             nextTripDepartures.stream().forEach(dt -> System.out.println(dt.getDescription() + "\t" + dt.getDepartureText() + "\n"));
         } catch (IOException e) {
-            System.out.println("Failure: getDepartureTimes failed to open URL");
+            System.out.println("Failure: getDepartureTimes failed to open URL.");
             e.printStackTrace();
         }
 

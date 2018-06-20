@@ -11,7 +11,7 @@ public class MTBotMain {
         bus.getStops("5", "4");
         bus.getDepartureTimes("5", "4","7SOL");
         bus.getRoutes();
-//        bus.getDirection();
+        bus.getDirections("5");
 
         /**
          * TODO: Create getDirection method in BusInfo class
