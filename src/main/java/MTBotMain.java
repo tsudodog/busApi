@@ -10,6 +10,12 @@ public class MTBotMain {
         bus.getDepartures("17025");
         bus.getStops("5", "4");
         bus.getDepartureTimes("5", "4","7SOL");
-//        bus.getRoutes();
+        bus.getRoutes();
+//        bus.getDirection();
+
+        /**
+         * TODO: Create getDirection method in BusInfo class
+         * TODO: Finish returns of getters route, departures, departuretimes,stops
+         */
     }
 }

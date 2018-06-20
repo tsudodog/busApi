@@ -44,19 +44,21 @@ public class BusInfo {
     private List getNextTripArray(StringBuffer inStr, String type) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonParser jsonParser = new JsonParser();
-        if (type.equals("stop")) {
-            JsonArray jsonArr = (jsonParser.parse(inStr.toString())).getAsJsonArray();
-            TextValuePair[] stopsArr = gson.fromJson(jsonArr, TextValuePair[].class);
+        JsonArray jsonArray = (jsonParser.parse(inStr.toString())).getAsJsonArray();
+        if (type.equals("stopOrDir")) {
+            TextValuePair[] stopsArr = gson.fromJson(jsonArray, TextValuePair[].class);
             List<TextValuePair> nextStopList = Arrays.asList(stopsArr);
-            setStopsList(nextStopList);
             return nextStopList;
         } else if (type.equals("departure")) {
-            JsonArray jsonArray = (jsonParser.parse(inStr.toString())).getAsJsonArray();
             NextTripDepartures[] departuresArr = gson.fromJson(jsonArray, NextTripDepartures[].class);
             List<NextTripDepartures> nextTripDepartures = Arrays.asList(departuresArr);
-            setDeparturesList(nextTripDepartures);
             return nextTripDepartures;
+        } else if (type.equals("routes")) {
+            NextTripRoute[] routeArr = gson.fromJson(jsonArray, NextTripRoute[].class);
+            List<NextTripRoute> nextTripRoutes = Arrays.asList(routeArr);
+            return nextTripRoutes;
         } else {
+            //throw some error or print error message
             return null;
         }
     }
@@ -77,6 +79,10 @@ public class BusInfo {
     public String getRoutes(){
         try {
             StringBuffer routes = makeHttpRequest("Routes?format=json");
+            List<NextTripRoute> nextRoutes = getNextTripArray(routes, "routes");
+            setRoutesList(nextRoutes);
+
+            nextRoutes.stream().forEach(nR -> System.out.println(nR.getDescription() + "\t" + nR.getRoute() + "\n"));
         } catch (IOException E) {
             System.out.println("Failure: getRoutes failed to open url");
         }
@@ -98,13 +104,9 @@ public class BusInfo {
         try{
             String inStr = stopID + "?format=json";
             StringBuffer departs = makeHttpRequest(inStr);
-
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            JsonParser jsonParser = new JsonParser();
-            JsonArray jsonArray = (jsonParser.parse(departs.toString())).getAsJsonArray();
-            NextTripDepartures[] departuresArr = gson.fromJson(jsonArray, NextTripDepartures[].class);
-            List<NextTripDepartures> nextTripDepartures = Arrays.asList(departuresArr);
+            List<NextTripDepartures> nextTripDepartures = getNextTripArray(departs, "departure");
             setDeparturesList(nextTripDepartures);
+
 
             nextTripDepartures.stream().forEach(dt -> System.out.println(dt.getDescription() + "\t" + dt.getDepartureText() + "\n"));
         }catch(IOException E){
@@ -125,7 +127,8 @@ public class BusInfo {
         try {
             String inStr = "Stops/" + route + "/" + directions + "?format=json";
             StringBuffer stops = makeHttpRequest(inStr);
-            List<TextValuePair> nextStopList = getNextTripArray(stops, "stop");
+            List<TextValuePair> nextStopList = getNextTripArray(stops, "stopOrDir");
+            setStopsList(nextStopList);
 
             nextStopList.stream().forEach(nt -> System.out.println(nt.getText() + "\t" + nt.getValue() + "\n"));
         } catch (IOException e) {
@@ -147,6 +150,7 @@ public class BusInfo {
             String inStr = route + "/" + directions + "/" + stopID + "?format=json";
             StringBuffer depTimes = makeHttpRequest(inStr);
             List<NextTripDepartures> nextTripDepartures = getNextTripArray(depTimes, "departure");
+            setDeparturesList(nextTripDepartures);
 
             nextTripDepartures.stream().forEach(dt -> System.out.println(dt.getDescription() + "\t" + dt.getDepartureText() + "\n"));
         } catch (IOException e) {
