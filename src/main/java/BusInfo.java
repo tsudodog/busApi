@@ -10,15 +10,19 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Created by Connor Hanlon on 6/19/2018
+ *
+ * BusInfo class interacts with MetroTransit API and stores temporary information as it is requested by user.
+ *
+ * MetroTransit API documentation can be found at http://svc.metrotransit.org/
+ */
 public class BusInfo {
     private final String BUS_URL = "http://svc.metrotransit.org/NexTrip/";
     private List<NextTripDepartures> departuresList;
     private List<NextTripRoute> routesList;
     private List<TextValuePair> directionsList;
     private List<TextValuePair> stopsList;
-    //the variables above store temporary info. If a request is made within the 30s
-    // refresh of the metro transit system, then pointless to try to access new information again. Just pull old/temp
-    //info from these stored variables.
 
 
     //makes an Http request with the input information such as stopid, route, and direction.\
@@ -37,7 +41,16 @@ public class BusInfo {
     }
 
 
-    //returns a list of specified objects with the input stringbuffer
+    /**
+     * Created by Connor Hanlon on 6/19/2018
+     *
+     * Method creates an object list of a desired type. If the input type is not recognized,
+     * then null is returned.
+     *
+     * @param inStr the input string to be built into an object list
+     * @param type used to determine which type of object list to construct
+     * @return
+     */
     private List getNextTripArray(StringBuffer inStr, String type) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonParser jsonParser = new JsonParser();
@@ -55,16 +68,24 @@ public class BusInfo {
             List<NextTripRoute> nextTripRoutes = Arrays.asList(routeArr);
             return nextTripRoutes;
         } else {
-            //throw some error or print error message
             return null;
         }
     }
 
+    /**
+     * Created by Connor Hanlon on 6/21/2018
+     *
+     * Formats a message as a string from a list of objects. If the type of message is not recognized,
+     * then the return message defaults to failure to retreive.
+     *
+     * @param typeMess determines the type of responding message to create
+     * @param busInfoList the list of objects to be utilized to construct return message
+     * @return formatted message
+     */
     private String getMessage(String typeMess, List busInfoList) {
         StringBuffer message = new StringBuffer();
         if (typeMess.equals("routes")) {
             for (NextTripRoute r : (List<NextTripRoute>)busInfoList) {
-//                String tester = "Route Number: " + r.getRoute() + " Description: " + r.getDescription() + "\n";
                 message.append("Route Number: " + r.getRoute() + "\t" +  " Description: " + r.getDescription() + "\n");
             }
         } else if (typeMess.equals("departures")) {
@@ -85,19 +106,14 @@ public class BusInfo {
         return message.toString();
     }
 
-    private void testJSON(StringBuffer str) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        JsonParser jsonParser = new JsonParser();
-        JsonElement jsonElement = jsonParser.parse(str.toString());
-        System.out.println(gson.toJson(jsonElement));
-    }
 
-    /**  TODO: check the time since last request if time is greater than or equal to 30 seconds,
-     *  then send request.
+    /**
+     * Created by Connor Hanlon on 6/19/2018
      *
-     *  else pull from local information.
+     * Pulls directional information on the input route from Metro Transit API.
      *
-     * Also must add a string to return!
+     * @param route the route to pull information on and return to user
+     * @return formatted directional message.
      */
     public String getDirections(String route) {
         String message = "Failed to get directions";
@@ -115,12 +131,12 @@ public class BusInfo {
         return message;
     }
 
-    /**  TODO: check the time since last request if time is greater than or equal to 30 seconds,
-     *  then send request.
+    /**
+     * Created by Connor Hanlon on 6/19/2018
      *
-     *  else pull from local information.
+     * Pulls general route information on all routes from Metro Transit API.
      *
-     * Also must add a string to return!
+     * @return formatted message displaying route number and the corresponding description of every route.
      */
     public String getRoutes(){
         String message = " Failed to get routes";
