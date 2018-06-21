@@ -16,15 +16,12 @@ public class BusInfo {
     private List<NextTripRoute> routesList;
     private List<TextValuePair> directionsList;
     private List<TextValuePair> stopsList;
-    private int timeSinceLastRequest = 0;
     //the variables above store temporary info. If a request is made within the 30s
     // refresh of the metro transit system, then pointless to try to access new information again. Just pull old/temp
     //info from these stored variables.
 
 
     //makes an Http request with the input information such as stopid, route, and direction.\
-    //returns stringbuffer that will be handled with (not yet named) method that will be sent to
-    //telegram
     private StringBuffer makeHttpRequest(String inStr) throws IOException {
         URL url = new URL(BUS_URL.concat(inStr));
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -63,6 +60,30 @@ public class BusInfo {
         }
     }
 
+    private String getMessage(String typeMess, List busInfoList) {
+        StringBuffer message = new StringBuffer();
+        if (typeMess.equals("routes")) {
+            for (NextTripRoute r : (List<NextTripRoute>)busInfoList) {
+//                String tester = "Route Number: " + r.getRoute() + " Description: " + r.getDescription() + "\n";
+                message.append("Route Number: " + r.getRoute() + "\t" +  " Description: " + r.getDescription() + "\n");
+            }
+        } else if (typeMess.equals("departures")) {
+            for (NextTripDepartures d : (List<NextTripDepartures>) busInfoList) {
+                message.append("Route Number: " + d.getRoute() + "\t" + " Direction: " + d.getRouteDirection() + "\t" + " Time of Arrival: " + d.getDepartureText() + "\n");
+            }
+        } else if (typeMess.equals("stop")) {
+            for (TextValuePair stop : (List<TextValuePair>) busInfoList) {
+                message.append(" Stop ID: " + stop.getValue() + "\t" + "Stop name: " + stop.getText() +"\n");
+            }
+        } else if (typeMess.equals("direction")) {
+            for (TextValuePair dir : (List<TextValuePair>) busInfoList) {
+                message.append("Direction: " + dir.getText() + " - " + dir.getValue() + "\n");
+            }
+        } else {
+            message.append("Failed to retrieve message, invalid type of message");
+        }
+        return message.toString();
+    }
 
     private void testJSON(StringBuffer str) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -79,20 +100,21 @@ public class BusInfo {
      * Also must add a string to return!
      */
     public String getDirections(String route) {
+        String message = "Failed to get directions";
         try {
             String inStr = "Directions/" + route + "?format=json";
             StringBuffer dirs = makeHttpRequest(inStr);
             List<TextValuePair> directionArr = getNextTripArray(dirs, "stopOrDir");
             setDirectionsList(directionArr);
 
-            directionArr.stream().forEach(nt -> System.out.println(nt.getText() + "\t" + nt.getValue() + "\n"));
+            message = getMessage("direction", directionsList);
         } catch (IOException e) {
             System.out.println("Failure: getDirections failed to open URL.");
             e.printStackTrace();
         }
-        return "";
-
+        return message;
     }
+
     /**  TODO: check the time since last request if time is greater than or equal to 30 seconds,
      *  then send request.
      *
@@ -101,18 +123,18 @@ public class BusInfo {
      * Also must add a string to return!
      */
     public String getRoutes(){
+        String message = " Failed to get routes";
         try {
             StringBuffer routes = makeHttpRequest("Routes?format=json");
             List<NextTripRoute> nextRoutes = getNextTripArray(routes, "routes");
             setRoutesList(nextRoutes);
 
-            nextRoutes.stream().forEach(nR -> System.out.println(nR.getDescription() + "\t" + nR.getRoute() + "\n"));
+            message = getMessage("routes", nextRoutes);
         } catch (IOException e) {
             System.out.println("Failure: getRoutes failed to open url");
             e.printStackTrace();
         }
-        //TODO
-        return "";
+        return message;
     }
 
 
@@ -126,20 +148,19 @@ public class BusInfo {
      * Also must add a string to return!
      */
     public String getDepartures(String stopID){
+        String message = "Failed to get departures";
         try{
             String inStr = stopID + "?format=json";
             StringBuffer departs = makeHttpRequest(inStr);
             List<NextTripDepartures> nextTripDepartures = getNextTripArray(departs, "departure");
             setDeparturesList(nextTripDepartures);
 
-
-            nextTripDepartures.stream().forEach(dt -> System.out.println(dt.getDescription() + "\t" + dt.getDepartureText() + "\n"));
+            message = getMessage("departures", nextTripDepartures);
         }catch(IOException e){
             System.out.println("Failure: getDepartures failed to open URL.");
             e.printStackTrace();
         }
-        //TODO
-        return "";
+        return message;
     }
 
     /**  TODO: check the time since last request if time is greater than or equal to 30 seconds,
@@ -150,19 +171,20 @@ public class BusInfo {
      * Also must add a string to return!
      */
     public String getStops(String route, String directions) {
+        String message = "Failed to get stops";
         try {
             String inStr = "Stops/" + route + "/" + directions + "?format=json";
             StringBuffer stops = makeHttpRequest(inStr);
             List<TextValuePair> nextStopList = getNextTripArray(stops, "stopOrDir");
             setStopsList(nextStopList);
 
-            nextStopList.stream().forEach(nt -> System.out.println(nt.getText() + "\t" + nt.getValue() + "\n"));
+            message = getMessage("stop", nextStopList);
         } catch (IOException e) {
             System.out.println("Failure: getStops failed to open URL.");
             e.printStackTrace();
         }
     //TODO
-        return "";
+        return message;
     }
 
     /**  TODO: check the time since last request if time is greater than or equal to 30 seconds,
@@ -172,20 +194,19 @@ public class BusInfo {
      *
      */
     public String getDepartureTimes(String route, String directions, String stopID) {
+        String message = "Failed to get departure times.";
         try {
             String inStr = route + "/" + directions + "/" + stopID + "?format=json";
             StringBuffer depTimes = makeHttpRequest(inStr);
             List<NextTripDepartures> nextTripDepartures = getNextTripArray(depTimes, "departure");
             setDeparturesList(nextTripDepartures);
 
-            nextTripDepartures.stream().forEach(dt -> System.out.println(dt.getDescription() + "\t" + dt.getDepartureText() + "\n"));
+            message = getMessage("departures", nextTripDepartures);
         } catch (IOException e) {
             System.out.println("Failure: getDepartureTimes failed to open URL.");
             e.printStackTrace();
         }
-
-        //TODO
-        return "";
+        return message;
     }
 
     public List<NextTripDepartures> getDeparturesList() {
@@ -218,14 +239,6 @@ public class BusInfo {
 
     public void setStopsList(List<TextValuePair> stopsList) {
         this.stopsList = stopsList;
-    }
-
-    public int getTimeSinceLastRequest() {
-        return timeSinceLastRequest;
-    }
-
-    public void setTimeSinceLastRequest(int timeSinceLastRequest) {
-        this.timeSinceLastRequest = timeSinceLastRequest;
     }
 }
 
