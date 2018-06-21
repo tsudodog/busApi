@@ -25,7 +25,15 @@ public class BusInfo {
     private List<TextValuePair> stopsList;
 
 
-    //makes an Http request with the input information such as stopid, route, and direction.\
+    /**
+     * Created by Alex Zalewski on 6/19/2018.
+     *
+     * Makes a HTTP request, reads and returns information from url.
+     *
+     * @param inStr input url to request and read from.
+     * @return json StringBuffer information to be handled with getter methods.
+     * @throws IOException
+     */
     private StringBuffer makeHttpRequest(String inStr) throws IOException {
         URL url = new URL(BUS_URL.concat(inStr));
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -154,14 +162,13 @@ public class BusInfo {
     }
 
 
-    /**  TODO: check the time since last request if time is greater than or equal to 30 seconds,
-     *  then send request.
+    /**
+     * Created by Connor Hanlon on 6/19/2018
      *
-     *  else pull from local information.
+     * Pulls the directional information on the desired input stop ID from Metro Transit API.
      *
-     * ONLY LIST NEXT 5 DEPARTURES!
-     *
-     * Also must add a string to return!
+     * @param stopID stop identification number used to pull info from api.
+     * @return formatted departure message displaying route number, direction, and time of arrival.
      */
     public String getDepartures(String stopID){
         String message = "Failed to get departures";
@@ -179,12 +186,14 @@ public class BusInfo {
         return message;
     }
 
-    /**  TODO: check the time since last request if time is greater than or equal to 30 seconds,
-     *  then send request.
+    /**
+     * Created by Connor Hanlon on 6/19/2018
      *
-     *  else pull from local information.
+     * Pulls stop information on the desired route number and direction number from Metro Transit API.
      *
-     * Also must add a string to return!
+     * @param route route NUMBER  used to pull info from api.
+     * @param directions direction used to pull from api. Must be the VALUE(1-4) as input and not the TEXT(NORTHBOUND,etc)
+     * @return formatted stop information displaying the stop ID and the stop description.
      */
     public String getStops(String route, String directions) {
         String message = "Failed to get stops";
@@ -199,15 +208,20 @@ public class BusInfo {
             System.out.println("Failure: getStops failed to open URL.");
             e.printStackTrace();
         }
-    //TODO
         return message;
     }
 
-    /**  TODO: check the time since last request if time is greater than or equal to 30 seconds,
-     *  then send request.
+    /**
+     * Created by Connor Hanlon on 6/19/2018
      *
-     *  else pull from local information.
+     * Pulls directional information on the desired input route number, direction number, and stop id number from
+     * Metro Transit API.
      *
+     * @param route route Number used to pull info from api.
+     * @param directions direction used to pull from api. Must be the VALUE(1-4) as input and not the TEXT(NORTHBOUND,etc)
+     * @param stopID stopid used to pull from api. Must be specific ID, which can be taken from a stop TextValuePair
+     *               object using the VALUE method.
+     * @return formatted departure message displaying route number, direction, and time of arrival.
      */
     public String getDepartureTimes(String route, String directions, String stopID) {
         String message = "Failed to get departure times.";
