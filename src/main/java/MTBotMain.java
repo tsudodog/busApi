@@ -15,11 +15,10 @@ public class MTBotMain {
 
 
         /**
-         * TODO: Create getDirection method in BusInfo class
-         * TODO: Finish returns of getters route, departures, departuretimes,stops
-         * TODO: handle timesincelastrequest not inside of businfo
-         *      If time elapsed since last request is less than 30s, just
-         *      obtain temporarily stored info from the bus object.
+         * TODO:
+         * -BusInfo will not be instantiated. Will only have working methods, will not store information.
+         * -BusInfo methods will not handle messages, create messages class to handle packaging
+         * -
          */
     }
 }
