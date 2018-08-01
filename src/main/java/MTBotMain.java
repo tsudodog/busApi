@@ -8,6 +8,15 @@ public class MTBotMain {
     //inputType can be either stopID, route, routeDir, or routeDirStop
      public static String inputType;
 
+    /**
+     * Bot Name: TCMetroTransitBot
+     * link: t.me/TCMetroTransitBot
+     *
+     * Use this token to access HTTP API:
+     * 526452962:AAHN2Eu_oCVHevipOgearrFLRMCt-jOPYjA
+     * 
+     * @param args
+     */
     public static void main(String[] args) {
         get("/mtbotmain", (req, res) -> "Hello WorldDDDDDDDDD");
 //        String outMess = Message.getMessage("routes", BusInfo.getRoutes());
