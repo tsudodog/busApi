@@ -36,7 +36,6 @@ public class MTBotMain {
 //        System.out.println(bus.getDirections("5"));
 
         System.out.println(Message.getMessage("departures", BusInfo.getDepartures("17025")));
-
         /**
          * TODO:
          * -BusInfo will not be instantiated. Will only have working methods, will not store information.

@@ -6,6 +6,7 @@ import java.net.URL;
 
 public class HandleRequest {
     private static final String BUS_URL = "http://svc.metrotransit.org/NexTrip/";
+    private static final String TELEGRAM_URL = "https://api.telegram.org/bot526452962:AAHN2Eu_oCVHevipOgearrFLRMCt-jOPYjA/getUpdates";
 
         /**
      * Created by Alex Zalewski on 6/19/2018.
@@ -16,8 +17,17 @@ public class HandleRequest {
      * @return json StringBuffer information to be handled with getter methods.
      * @throws IOException
      */
-    public static StringBuffer makeHttpRequest(String inStr) throws IOException {
+    public static StringBuffer makeBusHttpRequest(String inStr) throws IOException {
         URL url = new URL(BUS_URL.concat(inStr));
+        return makeHTTPRequest(url);
+    }
+
+    public static StringBuffer makeTeleHTTPRequest(String inStr) throws IOException {
+        URL url = new URL(TELEGRAM_URL.concat(inStr));
+        return makeHTTPRequest(url);
+    }
+
+    private static StringBuffer makeHTTPRequest(URL url) throws IOException {
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         BufferedReader input = new BufferedReader(new InputStreamReader(con.getInputStream()));

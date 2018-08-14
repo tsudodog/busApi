@@ -84,7 +84,7 @@ public class BusInfo {
     public static List<TextValuePair> getDirections(String route) {
         try {
             String inStr = "Directions/" + route + "?format=json";
-            StringBuffer dirs = HandleRequest.makeHttpRequest(inStr);
+            StringBuffer dirs = HandleRequest.makeBusHttpRequest(inStr);
             return getNextTripArray(dirs, "stopOrDir");
         } catch (IOException e) {
             System.out.println("Failure: getDirections failed to open URL.");
@@ -102,7 +102,7 @@ public class BusInfo {
      */
     public static List<NextTripRoute> getRoutes(){
         try {
-            StringBuffer routes = HandleRequest.makeHttpRequest("Routes?format=json");
+            StringBuffer routes = HandleRequest.makeBusHttpRequest("Routes?format=json");
             return getNextTripArray(routes, "routes");
         } catch (IOException e) {
             System.out.println("Failure: getRoutes failed to open url");
@@ -123,7 +123,7 @@ public class BusInfo {
     public static List<NextTripDepartures> getDepartures(String stopID){
         try{
             String inStr = stopID + "?format=json";
-            StringBuffer departs = HandleRequest.makeHttpRequest(inStr);
+            StringBuffer departs = HandleRequest.makeBusHttpRequest(inStr);
             return getNextTripArray(departs, "departure");
         }catch(IOException e){
             System.out.println("Failure: getDepartures failed to open URL.");
@@ -144,7 +144,7 @@ public class BusInfo {
     public static List<TextValuePair> getStops(String route, String directions) {
         try {
             String inStr = "Stops/" + route + "/" + directions + "?format=json";
-            StringBuffer stops = HandleRequest.makeHttpRequest(inStr);
+            StringBuffer stops = HandleRequest.makeBusHttpRequest(inStr);
             return getNextTripArray(stops, "stopOrDir");
         } catch (IOException e) {
             System.out.println("Failure: getStops failed to open URL.");
@@ -168,7 +168,7 @@ public class BusInfo {
     public static List<NextTripDepartures> getDepartureTimes(String route, String directions, String stopID) {
         try {
             String inStr = route + "/" + directions + "/" + stopID + "?format=json";
-            StringBuffer depTimes = HandleRequest.makeHttpRequest(inStr);
+            StringBuffer depTimes = HandleRequest.makeBusHttpRequest(inStr);
             return getNextTripArray(depTimes, "departure");
         } catch (IOException e) {
             System.out.println("Failure: getDepartureTimes failed to open URL.");
