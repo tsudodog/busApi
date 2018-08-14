@@ -18,31 +18,31 @@ import java.util.List;
  * MetroTransit API documentation can be found at http://svc.metrotransit.org/
  */
 public class BusInfo {
-    private static final String BUS_URL = "http://svc.metrotransit.org/NexTrip/";
-
-
-    /**
-     * Created by Alex Zalewski on 6/19/2018.
-     *
-     * Makes a HTTP request, reads and returns information from url.
-     *
-     * @param inStr input url to request and read from.
-     * @return json StringBuffer information to be handled with getter methods.
-     * @throws IOException
-     */
-    private static StringBuffer makeHttpRequest(String inStr) throws IOException {
-        URL url = new URL(BUS_URL.concat(inStr));
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
-        BufferedReader input = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer retString = new StringBuffer();
-        while ((inputLine = input.readLine()) != null) {
-            retString.append(inputLine);
-        }
-        input.close();
-        return retString;
-    }
+//    private static final String BUS_URL = "http://svc.metrotransit.org/NexTrip/";
+//
+//
+//    /**
+//     * Created by Alex Zalewski on 6/19/2018.
+//     *
+//     * Makes a HTTP request, reads and returns information from url.
+//     *
+//     * @param inStr input url to request and read from.
+//     * @return json StringBuffer information to be handled with getter methods.
+//     * @throws IOException
+//     */
+//    private static StringBuffer makeHttpRequest(String inStr) throws IOException {
+//        URL url = new URL(BUS_URL.concat(inStr));
+//        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+//        con.setRequestMethod("GET");
+//        BufferedReader input = new BufferedReader(new InputStreamReader(con.getInputStream()));
+//        String inputLine;
+//        StringBuffer retString = new StringBuffer();
+//        while ((inputLine = input.readLine()) != null) {
+//            retString.append(inputLine);
+//        }
+//        input.close();
+//        return retString;
+//    }
 
 
     /**
@@ -61,16 +61,13 @@ public class BusInfo {
         JsonArray jsonArray = (jsonParser.parse(inStr.toString())).getAsJsonArray();
         if (type.equals("stopOrDir")) {
             TextValuePair[] stopsArr = gson.fromJson(jsonArray, TextValuePair[].class);
-            List<TextValuePair> nextStopList = Arrays.asList(stopsArr);
-            return nextStopList;
+            return Arrays.asList(stopsArr);
         } else if (type.equals("departure")) {
             NextTripDepartures[] departuresArr = gson.fromJson(jsonArray, NextTripDepartures[].class);
-            List<NextTripDepartures> nextTripDepartures = Arrays.asList(departuresArr);
-            return nextTripDepartures;
+            return Arrays.asList(departuresArr);
         } else if (type.equals("routes")) {
             NextTripRoute[] routeArr = gson.fromJson(jsonArray, NextTripRoute[].class);
-            List<NextTripRoute> nextTripRoutes = Arrays.asList(routeArr);
-            return nextTripRoutes;
+            return Arrays.asList(routeArr);
         } else {
             return null;
         }
@@ -87,7 +84,7 @@ public class BusInfo {
     public static List<TextValuePair> getDirections(String route) {
         try {
             String inStr = "Directions/" + route + "?format=json";
-            StringBuffer dirs = makeHttpRequest(inStr);
+            StringBuffer dirs = HandleRequest.makeHttpRequest(inStr);
             return getNextTripArray(dirs, "stopOrDir");
         } catch (IOException e) {
             System.out.println("Failure: getDirections failed to open URL.");
@@ -105,7 +102,7 @@ public class BusInfo {
      */
     public static List<NextTripRoute> getRoutes(){
         try {
-            StringBuffer routes = makeHttpRequest("Routes?format=json");
+            StringBuffer routes = HandleRequest.makeHttpRequest("Routes?format=json");
             return getNextTripArray(routes, "routes");
         } catch (IOException e) {
             System.out.println("Failure: getRoutes failed to open url");
@@ -126,7 +123,7 @@ public class BusInfo {
     public static List<NextTripDepartures> getDepartures(String stopID){
         try{
             String inStr = stopID + "?format=json";
-            StringBuffer departs = makeHttpRequest(inStr);
+            StringBuffer departs = HandleRequest.makeHttpRequest(inStr);
             return getNextTripArray(departs, "departure");
         }catch(IOException e){
             System.out.println("Failure: getDepartures failed to open URL.");
@@ -147,7 +144,7 @@ public class BusInfo {
     public static List<TextValuePair> getStops(String route, String directions) {
         try {
             String inStr = "Stops/" + route + "/" + directions + "?format=json";
-            StringBuffer stops = makeHttpRequest(inStr);
+            StringBuffer stops = HandleRequest.makeHttpRequest(inStr);
             return getNextTripArray(stops, "stopOrDir");
         } catch (IOException e) {
             System.out.println("Failure: getStops failed to open URL.");
@@ -171,7 +168,7 @@ public class BusInfo {
     public static List<NextTripDepartures> getDepartureTimes(String route, String directions, String stopID) {
         try {
             String inStr = route + "/" + directions + "/" + stopID + "?format=json";
-            StringBuffer depTimes = makeHttpRequest(inStr);
+            StringBuffer depTimes = HandleRequest.makeHttpRequest(inStr);
             return getNextTripArray(depTimes, "departure");
         } catch (IOException e) {
             System.out.println("Failure: getDepartureTimes failed to open URL.");
