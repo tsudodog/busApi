@@ -18,13 +18,25 @@ public class HandleRequest {
      * @throws IOException
      */
     public static StringBuffer makeBusHttpRequest(String inStr) throws IOException {
-        URL url = new URL(BUS_URL.concat(inStr));
-        return makeHTTPRequest(url);
+        try {
+            URL url = new URL(BUS_URL.concat(inStr));
+            return makeHTTPRequest(url);
+        } catch (IOException e) {
+            System.out.println("Failure: Unable to make Bus HTTP Request");
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public static StringBuffer makeTeleHTTPRequest(String inStr) throws IOException {
-        URL url = new URL(TELEGRAM_URL.concat(inStr));
-        return makeHTTPRequest(url);
+    public static StringBuffer makeTeleHTTPRequest(String inStr) {
+        try {
+            URL url = new URL(TELEGRAM_URL.concat(inStr));
+            return makeHTTPRequest(url);
+        } catch (IOException e) {
+            System.out.println("Failure: Unable to make Telegram HTTP Request");
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private static StringBuffer makeHTTPRequest(URL url) throws IOException {
