@@ -6,16 +6,16 @@ import java.io.IOException;
 
 
 public class TelegramInfo {
-    private static String offset = "233624013";
+    private static String offset = "23362417";
     private static final String offsetFormat = "?offset=";
 
 
-    private static Update getUpdate()throws IOException {
+    public static Update getUpdate(){
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String inStr = offsetFormat.concat(offset);
-        Updates ups = gson.fromJson(HandleRequest.makeTeleHTTPRequest(inStr).toString(), Updates.class);
+//        String inStr = offsetFormat.concat(offset);
+//        String inStr = "?offset=23362416";
+        Updates ups = gson.fromJson(HandleRequest.makeTeleHTTPRequest("").toString(), Updates.class);
         Update update = ups.getResult().get(0);
-//       need to implement way to update offset
         return update;
     }
 

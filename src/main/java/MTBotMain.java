@@ -1,14 +1,16 @@
 import TwinCitiesTransit.NextTripRoute;
+import jdk.net.SocketFlow;
+import org.telegram.telegrambots.api.objects.Update;
 //import com.sun.java.util.jar.pack.Instruction;
 
 import javax.swing.plaf.synth.SynthOptionPaneUI;
+import java.net.HttpURLConnection;
 import java.util.List;
 
+import static com.sun.deploy.registration.InstallCommands.STATUS_OK;
 import static spark.Spark.*;
 
 public class MTBotMain {
-    //inputType can be either stopID, route, routeDir, or routeDirStop
-     public static String inputType;
 
     /**
      * Bot Name: TCMetroTransitBot
@@ -20,7 +22,24 @@ public class MTBotMain {
      * @param args
      */
     public static void main(String[] args) {
-        get("/mtbotmain", (req, res) -> "Hello WorldDDDDDDDDD");
+//        get("/mtbotmain", (req, res) -> "Hello WorldDDDDDDDDD");
+
+        post("/input", (req, res) -> {
+                    Update update = TelegramInfo.getUpdate();
+                    String chatID = getChatID(update);
+                    if (!update.hasMessage()) {
+                        HandleRequest.sendToTelegram(chatID, "Error: no message received");
+                    } else {
+                        handleCommand(chatID, getText(update));
+                    }
+
+            System.out.println("done");
+            System.out.println(req.body());
+                    System.out.println(req.headers());
+                    res.status(200);//shorthand for good
+                    return res;
+        }
+        );
 
 //        String outMess = Message.getMessage("routes", BusInfo.getRoutes());
 //        System.out.println(Message.getMessage("routes", BusInfo.getRoutes()));
@@ -40,41 +59,85 @@ public class MTBotMain {
 
 //        System.out.println(Message.getMessage("departures", BusInfo.getDepartures("17025")));
 //        System.out.println(TelegramInfo.getUpMess());
-        System.out.println(messageToTelegram(TelegramInfo.getUpMess()));
+//        System.out.println(messageToTelegram(TelegramInfo.getUpMess()));
 
     }
 
-    private static String messageToTelegram(String upMessage) {
-        String[] messArr = upMessage.split("\\s+");
-        String command = messArr[0];
-        switch (command) {
+    private static void handleCommand(String chatID, String text) {
+        String[] reqArr = text.split("\\s+");
+        String cmd = reqArr[0];
+        String retMess;
+        switch (cmd) {
             case "/departures":
-                if (messArr.length < 2) {
-                    return "The Stop ID is required to return departures. Please resend command with a Stop ID";
-                } else {
-                    return Message.getMessage("departures", BusInfo.getDepartures(messArr[1]));
-                }
+                retMess = getDepartures(reqArr);
             case "/departuretimes":
-                if (messArr.length < 4) {
-                    return "Not enough information provided. Please resend command with Route, Direction, and Stop ID.";
-                } else {
-                    return Message.getMessage("departures", BusInfo.getDepartureTimes(messArr[1], messArr[2], messArr[3]));
-                }
+                retMess = getDepartureTimes(reqArr);
             case "/routes":
-                return Message.getMessage("routes", BusInfo.getRoutes());
+                retMess = getRoutes();
             case "/directions":
-                if (messArr.length < 2) {
-                    return "Not enough information provided. Please resend command with Route.";
-                } else {
-                    return Message.getMessage("direction", BusInfo.getDirections(messArr[1]));
-                }
+                retMess = getDirections(reqArr);
             case "/stops":
-                if (messArr.length < 3) {
-                    return " Not enough information provided. Please resend command with Route and Direction.";
-                } else {
-                    return Message.getMessage("stop", BusInfo.getStops(messArr[1], messArr[2]));
-                }
-            default: return "Unrecognized command, please resend command with appropriate inputs";
+                retMess = getStops(reqArr);
+            default:
+                retMess = "Unrecognized command, please resend command with appropriate inputs";
+        }
+        HandleRequest.sendToTelegram(chatID, retMess);
+    }
+
+    private static String getDepartures(String[] reqArr) {
+        if (reqArr.length < 2) {
+            if (reqArr.length < 2) {
+              return  "The Stop ID is required to return departures. Please resend command with a Stop ID";
+            } else {
+                //String retMess = Message.getMessage();
+                //sendToTelegram(chatID, retMess);
+            }
         }
     }
+
+    private static String getDepartureTimes(String[] reqArr) {
+        if (reqArr.length < 4) {
+           return "Not enough information provided. Please resend command with Route, Direction, and Stop ID.";
+        } else {
+            //String retMess = Message.getMessage();
+            //sendToTelegram(chatID, retMess);
+        }
+    }
+
+    private static String getRoutes() {
+        //String retMess = Message.getMessage();
+        //sendToTelegram(chatID, retMess);
+    }
+
+    private static String getDirections(String[] reqArr) {
+        if (reqArr.length < 2) {
+            return "Not enough information provided. Please resend command with Route.":
+        } else {
+            //String retMess = Message.getMessage();
+            //sendToTelegram(chatID, retMess);
+        }
+    }
+
+    private static String getStops(String[] reqArr) {
+        if (reqArr.length < 3) {
+           return "Not enough information provided. Please resend command with Route and Direction.";
+        } else {
+            //String retMess = Message.getMessage();
+            //sendToTelegram(chatID, retMess);
+        }
+    }
+
+
+    private static String getText(Update update) {
+        return update.getMessage().getText();
+    }
+
+    private static String getChatID(Update update) {
+        return update.getMessage().getChatId().toString();
+    }
+
+    private static String getMessageToUser(String[] busArgs) {
+
+    }
+
 }
