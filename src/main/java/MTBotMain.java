@@ -4,7 +4,9 @@ import org.telegram.telegrambots.api.objects.Update;
 //import com.sun.java.util.jar.pack.Instruction;
 
 import javax.swing.plaf.synth.SynthOptionPaneUI;
+import java.io.BufferedReader;
 import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 import static com.sun.deploy.registration.InstallCommands.STATUS_OK;
@@ -22,24 +24,44 @@ public class MTBotMain {
      * @param args
      */
     public static void main(String[] args) {
-//        get("/mtbotmain", (req, res) -> "Hello WorldDDDDDDDDD");
-
-        post("/testing", (req, res) -> {
+        port(9000);
+        get("/mtbotmain", (req, res) -> {
+                    HandleRequest.deleteWebhook();
                     Update update = TelegramInfo.getUpdate();
                     String chatID = getChatID(update);
                     if (!update.hasMessage()) {
                         HandleRequest.sendToTelegram(chatID, "Error: no message received");
                     } else {
+                        System.out.println("2");
+                        System.out.println(chatID);
                         handleCommand(chatID, getText(update));
                     }
-
-            System.out.println("done");
-            System.out.println(req.body());
+                    System.out.println("done");
                     System.out.println(req.headers());
-                    res.status(200);//shorthand for good
+                    res.status(200);
+                    HandleRequest.setWebhook();
                     return res;
         }
         );
+
+//        post("/testing", (req, res) -> {
+//                    System.out.println("done");
+//
+//                    Update update = TelegramInfo.getUpdate();
+//                    String chatID = getChatID(update);
+//                    if (!update.hasMessage()) {
+//                        HandleRequest.sendToTelegram(chatID, "Error: no message received");
+//                    } else {
+//                        handleCommand(chatID, getText(update));
+//                    }
+//
+//            System.out.println("done");
+//            System.out.println(req.body());
+//                    System.out.println(req.headers());
+//                    res.status(200);//shorthand for good
+//                    return res;
+//        }
+//        );
 
 //        String outMess = Message.getMessage("routes", BusInfo.getRoutes());
 //        System.out.println(Message.getMessage("routes", BusInfo.getRoutes()));
@@ -59,7 +81,9 @@ public class MTBotMain {
 
 //        System.out.println(Message.getMessage("departures", BusInfo.getDepartures("17025")));
 //        System.out.println(TelegramInfo.getUpMess());
-        System.out.println();
+    }
+
+    private static void deleteWebhook() {
 
     }
 
@@ -70,18 +94,28 @@ public class MTBotMain {
         switch (cmd) {
             case "/departures":
                 retMess = getDepartures(reqArr);
+                break;
             case "/departuretimes":
                 retMess = getDepartureTimes(reqArr);
+                break;
             case "/routes":
                 retMess = getRoutes();
+                break;
             case "/directions":
                 retMess = getDirections(reqArr);
+                break;
             case "/stops":
                 retMess = getStops(reqArr);
+                break;
             default:
                 retMess = "Unrecognized command, please resend command with appropriate inputs";
         }
-        HandleRequest.sendToTelegram(chatID, retMess);
+        String[] lines = retMess.split("\n", 6);
+        for (int i = 0; i < 5; i++) {
+            System.out.println(lines[1]);
+            HandleRequest.sendToTelegram(chatID, lines[i]);
+        }
+//        HandleRequest.sendToTelegram(chatID, retMess);
     }
 
     private static String getDepartures(String[] reqArr) {

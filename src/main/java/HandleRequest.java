@@ -1,17 +1,17 @@
-import javax.ws.rs.POST;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
 
 public class HandleRequest {
     private static final String BUS_URL = "http://svc.metrotransit.org/NexTrip/";
     private static final String TELEGRAM_UPDATE_URL = "https://api.telegram.org/bot526452962:AAHN2Eu_oCVHevipOgearrFLRMCt-jOPYjA/getUpdates";
     private static final String TELEGRAM_SEND_MESSAGE_URL = "https://api.telegram.org/bot526452962:AAHN2Eu_oCVHevipOgearrFLRMCt-jOPYjA/sendMessage?chat_id=";
+    private static final String DEL_WEBHOOK_URL = "https://api.telegram.org/bot526452962:AAHN2Eu_oCVHevipOgearrFLRMCt-jOPYjA/deleteWebhook";
+    private static final String BOT_TOKEN = "526452962:AAHN2Eu_oCVHevipOgearrFLRMCt-jOPYjA";
+    private static final String SET_WEBHOOK_URL = "https://api.telegram.org/bot526452962:AAHN2Eu_oCVHevipOgearrFLRMCt-jOPYjA/setWebhook?url=https://5faf1de7.ngrok.io/mtbotmain";
 
-
-        /**
+    /**
      * Created by Alex Zalewski on 6/19/2018.
      *
      * Makes a HTTP request, reads and returns information from url.
@@ -60,9 +60,40 @@ public class HandleRequest {
             String mess = chat_id + "&text=" + message;
             URL url = new URL(TELEGRAM_SEND_MESSAGE_URL.concat(mess));
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("POST");
+            con.getInputStream();
+            con.disconnect();
         } catch (IOException e) {
             System.out.println("Failed to send to Telegram");
+            e.printStackTrace();
+        }
+    }
+    private static void webhookSetup(URL url)throws IOException {
+        try {
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.getInputStream();
+            con.disconnect();
+        } catch (IOException e) {
+            System.out.println("Error: failed to delete webhook.");
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteWebhook(){
+        try {
+            URL url = new URL(DEL_WEBHOOK_URL);
+            webhookSetup(url);
+        } catch (IOException e) {
+            System.out.println("Error: failed to delete webhook.");
+            e.printStackTrace();
+        }
+    }
+
+    public static void setWebhook() {
+        try {
+            URL url = new URL(SET_WEBHOOK_URL);
+            webhookSetup(url);
+        } catch (IOException e) {
+            System.out.println("Error: failed to set webhook");
             e.printStackTrace();
         }
     }
