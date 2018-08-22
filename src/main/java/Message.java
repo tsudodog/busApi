@@ -21,26 +21,50 @@ public class Message {
      *
      *      Direction: formatted directional information.
      */
-    public static String getMessage(String typeMess, List busInfoList) {
+//    public static String getMessage(String typeMess, List busInfoList) {
+//        StringBuffer message = new StringBuffer();
+//        if (typeMess.equals("routes")) {
+//
+//        } else if (typeMess.equals("departures")) {
+//
+//        } else if (typeMess.equals("stop")) {
+//
+//        } else if (typeMess.equals("direction")) {
+//
+//        } else {
+//            message.append("Failed to retrieve message, invalid type of message");
+//        }
+//        return message.toString();
+//    }
+
+    public static String getDepartureMessage(List<NextTripDepartures> busList) {
         StringBuffer message = new StringBuffer();
-        if (typeMess.equals("routes")) {
-            for (NextTripRoute r : (List<NextTripRoute>)busInfoList) {
-                message.append("Route Number: " + r.getRoute() + "\t" +  " Description: " + r.getDescription() + "\n");
-            }
-        } else if (typeMess.equals("departures")) {
-            for (NextTripDepartures d : (List<NextTripDepartures>) busInfoList) {
-                message.append("Route Number: " + d.getRoute() + "\t" + " Direction: " + d.getRouteDirection() + "\t" + " Time of Arrival: " + d.getDepartureText() + "\n");
-            }
-        } else if (typeMess.equals("stop")) {
-            for (TextValuePair stop : (List<TextValuePair>) busInfoList) {
-                message.append(" Stop ID: " + stop.getValue() + "\t" + "Stop name: " + stop.getText() +"\n");
-            }
-        } else if (typeMess.equals("direction")) {
-            for (TextValuePair dir : (List<TextValuePair>) busInfoList) {
-                message.append("Direction: " + dir.getText() + " - " + dir.getValue() + "\n");
-            }
-        } else {
-            message.append("Failed to retrieve message, invalid type of message");
+        for (NextTripDepartures d : busList) {
+            message.append("Route Number: " + d.getRoute() + "\t" + " Direction: " + d.getRouteDirection() + "\t" + " Time of Arrival: " + d.getDepartureText() + "\n");
+        }
+        return message.toString();
+    }
+
+    public static String getRouteMessage(List<NextTripRoute> busList) {
+        StringBuffer message = new StringBuffer();
+        for (NextTripRoute r : busList) {
+            message.append("Route Number: " + r.getRoute() + "\t" +  " Description: " + r.getDescription() + "\n");
+        }
+        return message.toString();
+    }
+
+    public static String getStopMessage(List<TextValuePair> busList) {
+        StringBuffer message = new StringBuffer();
+        for (TextValuePair stop : busList) {
+            message.append(" Stop ID: " + stop.getValue() + "\t" + "Stop name: " + stop.getText() +"\n");
+        }
+        return message.toString();
+    }
+
+    public static String getDirectionMessage(List<TextValuePair> busList) {
+        StringBuffer message = new StringBuffer();
+        for (TextValuePair dir : busList) {
+            message.append("Direction: " + dir.getText() + " - " + dir.getValue() + "\n");
         }
         return message.toString();
     }

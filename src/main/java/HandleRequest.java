@@ -55,7 +55,7 @@ public class HandleRequest {
         return retString;
     }
 
-    public static void sendToTelegram(String chat_id, String message) throws IOException{
+    public static void sendToTelegram(String chat_id, String message){
         try {
             String mess = chat_id + "&text=" + message;
             URL url = new URL(TELEGRAM_SEND_MESSAGE_URL.concat(mess));

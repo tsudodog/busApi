@@ -19,16 +19,4 @@ public class TelegramInfo {
         return update;
     }
 
-
-    public static String getUpMess() {
-        try {
-            Update update = getUpdate();
-            return update.getMessage().getText();
-        } catch (IOException E) {
-            System.out.println("Failure: Could not retrieve update message");
-            E.printStackTrace();
-        }
-        return null;
-    }
-
 }

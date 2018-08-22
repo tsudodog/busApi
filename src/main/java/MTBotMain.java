@@ -24,7 +24,7 @@ public class MTBotMain {
     public static void main(String[] args) {
 //        get("/mtbotmain", (req, res) -> "Hello WorldDDDDDDDDD");
 
-        post("/input", (req, res) -> {
+        post("/testing", (req, res) -> {
                     Update update = TelegramInfo.getUpdate();
                     String chatID = getChatID(update);
                     if (!update.hasMessage()) {
@@ -59,7 +59,7 @@ public class MTBotMain {
 
 //        System.out.println(Message.getMessage("departures", BusInfo.getDepartures("17025")));
 //        System.out.println(TelegramInfo.getUpMess());
-//        System.out.println(messageToTelegram(TelegramInfo.getUpMess()));
+        System.out.println();
 
     }
 
@@ -86,12 +86,10 @@ public class MTBotMain {
 
     private static String getDepartures(String[] reqArr) {
         if (reqArr.length < 2) {
-            if (reqArr.length < 2) {
-              return  "The Stop ID is required to return departures. Please resend command with a Stop ID";
-            } else {
-                //String retMess = Message.getMessage();
-                //sendToTelegram(chatID, retMess);
-            }
+            return  "The Stop ID is required to return departures. Please resend command with a Stop ID";
+        } else {
+            String message = Message.getDepartureMessage(BusInfo.getDepartures(reqArr[1]));
+            return message;
         }
     }
 
@@ -99,22 +97,22 @@ public class MTBotMain {
         if (reqArr.length < 4) {
            return "Not enough information provided. Please resend command with Route, Direction, and Stop ID.";
         } else {
-            //String retMess = Message.getMessage();
-            //sendToTelegram(chatID, retMess);
+            String message = Message.getDepartureMessage(BusInfo.getDepartureTimes(reqArr[1], reqArr[2], reqArr[3]));
+            return message;
         }
     }
 
     private static String getRoutes() {
-        //String retMess = Message.getMessage();
-        //sendToTelegram(chatID, retMess);
+        String message = Message.getRouteMessage(BusInfo.getRoutes());
+        return message;
     }
 
     private static String getDirections(String[] reqArr) {
         if (reqArr.length < 2) {
-            return "Not enough information provided. Please resend command with Route.":
+            return "Not enough information provided. Please resend command with Route.";
         } else {
-            //String retMess = Message.getMessage();
-            //sendToTelegram(chatID, retMess);
+            String message = Message.getDirectionMessage(BusInfo.getDirections(reqArr[1]));
+            return message;
         }
     }
 
@@ -122,8 +120,8 @@ public class MTBotMain {
         if (reqArr.length < 3) {
            return "Not enough information provided. Please resend command with Route and Direction.";
         } else {
-            //String retMess = Message.getMessage();
-            //sendToTelegram(chatID, retMess);
+            String message = Message.getStopMessage(BusInfo.getStops(reqArr[1], reqArr[2]));
+            return message;
         }
     }
 
@@ -136,8 +134,5 @@ public class MTBotMain {
         return update.getMessage().getChatId().toString();
     }
 
-    private static String getMessageToUser(String[] busArgs) {
-
-    }
 
 }

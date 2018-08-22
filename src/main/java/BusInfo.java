@@ -1,12 +1,8 @@
 import TwinCitiesTransit.*;
 import com.google.gson.*;
 
-import javax.xml.soap.Text;
-import java.io.BufferedReader;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,33 +41,6 @@ public class BusInfo {
 //    }
 
 
-    /**
-     * Created by Connor Hanlon on 6/19/2018
-     *
-     * Method creates an object list of a desired type. If the input type is not recognized,
-     * then null is returned.
-     *
-     * @param inStr the input string to be built into an object list
-     * @param type used to determine which type of object list to construct
-     * @return
-     */
-    private static List getNextTripArray(StringBuffer inStr, String type) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        JsonParser jsonParser = new JsonParser();
-        JsonArray jsonArray = (jsonParser.parse(inStr.toString())).getAsJsonArray();
-        if (type.equals("stopOrDir")) {
-            TextValuePair[] stopsArr = gson.fromJson(jsonArray, TextValuePair[].class);
-            return Arrays.asList(stopsArr);
-        } else if (type.equals("departure")) {
-            NextTripDepartures[] departuresArr = gson.fromJson(jsonArray, NextTripDepartures[].class);
-            return Arrays.asList(departuresArr);
-        } else if (type.equals("routes")) {
-            NextTripRoute[] routeArr = gson.fromJson(jsonArray, NextTripRoute[].class);
-            return Arrays.asList(routeArr);
-        } else {
-            return null;
-        }
-    }
 
     /**
      * Created by Connor Hanlon on 6/19/2018
@@ -85,7 +54,12 @@ public class BusInfo {
         try {
             String inStr = "Directions/" + route + "?format=json";
             StringBuffer dirs = HandleRequest.makeBusHttpRequest(inStr);
-            return getNextTripArray(dirs, "stopOrDir");
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            JsonParser jsonParser = new JsonParser();
+            JsonArray jsonArray = (jsonParser.parse(dirs.toString())).getAsJsonArray();
+            TextValuePair[] dirArray= gson.fromJson(jsonArray, TextValuePair[].class);
+            return Arrays.asList(dirArray);
+
         } catch (IOException e) {
             System.out.println("Failure: getDirections failed to open URL.");
             e.printStackTrace();
@@ -103,7 +77,11 @@ public class BusInfo {
     public static List<NextTripRoute> getRoutes(){
         try {
             StringBuffer routes = HandleRequest.makeBusHttpRequest("Routes?format=json");
-            return getNextTripArray(routes, "routes");
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            JsonParser jsonParser = new JsonParser();
+            JsonArray jsonArray = (jsonParser.parse(routes.toString())).getAsJsonArray();
+            NextTripRoute[] routeArr = gson.fromJson(jsonArray, NextTripRoute[].class);
+            return Arrays.asList(routeArr);
         } catch (IOException e) {
             System.out.println("Failure: getRoutes failed to open url");
             e.printStackTrace();
@@ -124,7 +102,11 @@ public class BusInfo {
         try{
             String inStr = stopID + "?format=json";
             StringBuffer departs = HandleRequest.makeBusHttpRequest(inStr);
-            return getNextTripArray(departs, "departure");
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            JsonParser jsonParser = new JsonParser();
+            JsonArray jsonArray = (jsonParser.parse(departs.toString())).getAsJsonArray();
+            NextTripDepartures[] departuresArr = gson.fromJson(jsonArray, NextTripDepartures[].class);
+            return Arrays.asList(departuresArr);
         }catch(IOException e){
             System.out.println("Failure: getDepartures failed to open URL.");
             e.printStackTrace();
@@ -145,7 +127,11 @@ public class BusInfo {
         try {
             String inStr = "Stops/" + route + "/" + directions + "?format=json";
             StringBuffer stops = HandleRequest.makeBusHttpRequest(inStr);
-            return getNextTripArray(stops, "stopOrDir");
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            JsonParser jsonParser = new JsonParser();
+            JsonArray jsonArray = (jsonParser.parse(stops.toString())).getAsJsonArray();
+            TextValuePair[] stopsArr = gson.fromJson(jsonArray, TextValuePair[].class);
+            return Arrays.asList(stopsArr);
         } catch (IOException e) {
             System.out.println("Failure: getStops failed to open URL.");
             e.printStackTrace();
@@ -169,7 +155,11 @@ public class BusInfo {
         try {
             String inStr = route + "/" + directions + "/" + stopID + "?format=json";
             StringBuffer depTimes = HandleRequest.makeBusHttpRequest(inStr);
-            return getNextTripArray(depTimes, "departure");
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            JsonParser jsonParser = new JsonParser();
+            JsonArray jsonArray = (jsonParser.parse(depTimes.toString())).getAsJsonArray();
+            NextTripDepartures[] departuresArr = gson.fromJson(jsonArray, NextTripDepartures[].class);
+            return Arrays.asList(departuresArr);
         } catch (IOException e) {
             System.out.println("Failure: getDepartureTimes failed to open URL.");
             e.printStackTrace();
