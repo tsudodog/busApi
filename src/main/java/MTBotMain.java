@@ -1,15 +1,4 @@
-import TwinCitiesTransit.NextTripRoute;
-import jdk.net.SocketFlow;
 import org.telegram.telegrambots.api.objects.Update;
-//import com.sun.java.util.jar.pack.Instruction;
-
-import javax.swing.plaf.synth.SynthOptionPaneUI;
-import java.io.BufferedReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.List;
-
-import static com.sun.deploy.registration.InstallCommands.STATUS_OK;
 import static spark.Spark.*;
 
 public class MTBotMain {

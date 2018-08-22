@@ -99,7 +99,7 @@ public class HandleRequest {
         }
     }
 
-    
+
     public static boolean hasUpdates() {
         try {
             URL url = new URL(WEBHOOK_INFO_URL);

@@ -2,8 +2,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.telegram.telegrambots.api.objects.Update;
 
-import java.io.IOException;
-
 
 public class TelegramInfo {
     private static String offset = "23362417";
@@ -12,8 +10,6 @@ public class TelegramInfo {
 
     public static Update getUpdate(){
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//        String inStr = offsetFormat.concat(offset);
-//        String inStr = "?offset=23362416";
         Updates ups = gson.fromJson(HandleRequest.makeTeleHTTPRequest("").toString(), Updates.class);
         Update update = ups.getResult().get(0);
         return update;
