@@ -26,6 +26,19 @@ public class MTBotMain {
     public static void main(String[] args) {
         port(9000);
         get("/mtbotmain", (req, res) -> {
+//            if(HandleRequest.hasUpdates()){
+//                HandleRequest.deleteWebhook();
+//                Update update = TelegramInfo.getUpdate();
+//                String chatID = getChatID(update);
+//                if (!update.hasMessage()) {
+//                    HandleRequest.sendToTelegram(chatID, "Error: no message received");
+//                } else {
+//                    System.out.println("2");
+//                    System.out.println(chatID);
+//                    handleCommand(chatID, getText(update));
+//                }
+//                HandleRequest.setWebhook();
+//            }
                     HandleRequest.deleteWebhook();
                     Update update = TelegramInfo.getUpdate();
                     String chatID = getChatID(update);
@@ -36,10 +49,11 @@ public class MTBotMain {
                         System.out.println(chatID);
                         handleCommand(chatID, getText(update));
                     }
+                    HandleRequest.setWebhook();
+
                     System.out.println("done");
                     System.out.println(req.headers());
                     res.status(200);
-                    HandleRequest.setWebhook();
                     return res;
         }
         );
@@ -83,9 +97,6 @@ public class MTBotMain {
 //        System.out.println(TelegramInfo.getUpMess());
     }
 
-    private static void deleteWebhook() {
-
-    }
 
     private static void handleCommand(String chatID, String text) {
         String[] reqArr = text.split("\\s+");
@@ -115,7 +126,6 @@ public class MTBotMain {
             System.out.println(lines[1]);
             HandleRequest.sendToTelegram(chatID, lines[i]);
         }
-//        HandleRequest.sendToTelegram(chatID, retMess);
     }
 
     private static String getDepartures(String[] reqArr) {

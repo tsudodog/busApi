@@ -10,6 +10,7 @@ public class HandleRequest {
     private static final String DEL_WEBHOOK_URL = "https://api.telegram.org/bot526452962:AAHN2Eu_oCVHevipOgearrFLRMCt-jOPYjA/deleteWebhook";
     private static final String BOT_TOKEN = "526452962:AAHN2Eu_oCVHevipOgearrFLRMCt-jOPYjA";
     private static final String SET_WEBHOOK_URL = "https://api.telegram.org/bot526452962:AAHN2Eu_oCVHevipOgearrFLRMCt-jOPYjA/setWebhook?url=https://5faf1de7.ngrok.io/mtbotmain";
+    private static final String WEBHOOK_INFO_URL = "https://api.telegram.org/bot526452962:AAHN2Eu_oCVHevipOgearrFLRMCt-jOPYjA/getWebhookInfo";
 
     /**
      * Created by Alex Zalewski on 6/19/2018.
@@ -94,6 +95,21 @@ public class HandleRequest {
             webhookSetup(url);
         } catch (IOException e) {
             System.out.println("Error: failed to set webhook");
+            e.printStackTrace();
+        }
+    }
+
+    
+    public static boolean hasUpdates() {
+        try {
+            URL url = new URL(WEBHOOK_INFO_URL);
+            Boolean hasMoreUpdates;
+            webhookSetup(url);
+            //get json and check that "pending_update_count" is zero.
+            //if not then return true
+            return true;
+        } catch (IOException e) {
+            System.out.println("Error: failed to check for updates");
             e.printStackTrace();
         }
     }
