@@ -1,3 +1,5 @@
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -58,12 +60,13 @@ public class HandleRequest {
 
     public static void sendToTelegram(String chat_id, String message){
         try {
-            String mess = chat_id + "&text=" + message;
+            String mess = chat_id + "&text=" + message ;
             URL url = new URL(TELEGRAM_SEND_MESSAGE_URL.concat(mess));
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.getInputStream();
             con.disconnect();
         } catch (IOException e) {
+            System.out.println(message);
             System.out.println("Failed to send to Telegram");
             e.printStackTrace();
         }

@@ -1,6 +1,7 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import static spark.Spark.*;
 
@@ -25,24 +26,13 @@ public class MTBotMain {
                     if (!update.hasMessage()) {
                         HandleRequest.sendToTelegram(chatID, "Error: no message received");
                     } else {
-                        System.out.println("2");
-                        System.out.println(chatID);
                         handleCommand(chatID, getText(update));
                     }
-
-                    System.out.println("done");
                     System.out.println(req.headers());
                     res.status(200);
                     return res;
         }
         );
-
-//        System.out.println(bus.getDepartures("17025"));
-//        System.out.println(bus.getDepartureTimes("5", "4", "7SOL"));
-//        System.out.println(bus.getStops("5", "4"));
-//        System.out.println(bus.getRoutes());
-//        System.out.println(bus.getDirections("5"));
-
     }
 
 
@@ -69,14 +59,14 @@ public class MTBotMain {
                 break;
             default:
                 retMess = "Unrecognized command, please resend command with appropriate inputs";
+                break;
         }
-        String[] lines = retMess.split("\n", 6);
-//        for (int i = 0; i < 5; i++) {
-//            System.out.println(lines[1]);
-//            HandleRequest.sendToTelegram(chatID, lines[i]);
-//        }
-        HandleRequest.sendToTelegram(chatID, lines[1]);
-
+        String[] lines = retMess.split("\n", 5);
+        HandleRequest.sendToTelegram(chatID, lines[0]);
+        for (int i = 1; i < lines.length; i++) {
+            System.out.println(lines[1]);
+            HandleRequest.sendToTelegram(chatID, lines[i]);
+        }
     }
 
     private static String getDepartures(String[] reqArr) {
