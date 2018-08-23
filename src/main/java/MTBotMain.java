@@ -1,3 +1,6 @@
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import org.telegram.telegrambots.api.objects.Update;
 import static spark.Spark.*;
 
@@ -14,22 +17,10 @@ public class MTBotMain {
      */
     public static void main(String[] args) {
         port(9000);
-        get("/mtbotmain", (req, res) -> {
-//            if(HandleRequest.hasUpdates()){
-//                HandleRequest.deleteWebhook();
-//                Update update = TelegramInfo.getUpdate();
-//                String chatID = getChatID(update);
-//                if (!update.hasMessage()) {
-//                    HandleRequest.sendToTelegram(chatID, "Error: no message received");
-//                } else {
-//                    System.out.println("2");
-//                    System.out.println(chatID);
-//                    handleCommand(chatID, getText(update));
-//                }
-//                HandleRequest.setWebhook();
-//            }
-                    HandleRequest.deleteWebhook();
-                    Update update = TelegramInfo.getUpdate();
+        post("/mtbotmain", (req, res) -> {
+                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                    Update update = gson.fromJson(req.body(), Update.class);
+                    System.out.println(update.getMessage().getText());
                     String chatID = getChatID(update);
                     if (!update.hasMessage()) {
                         HandleRequest.sendToTelegram(chatID, "Error: no message received");
@@ -38,7 +29,6 @@ public class MTBotMain {
                         System.out.println(chatID);
                         handleCommand(chatID, getText(update));
                     }
-                    HandleRequest.setWebhook();
 
                     System.out.println("done");
                     System.out.println(req.headers());
@@ -47,44 +37,14 @@ public class MTBotMain {
         }
         );
 
-//        post("/testing", (req, res) -> {
-//                    System.out.println("done");
-//
-//                    Update update = TelegramInfo.getUpdate();
-//                    String chatID = getChatID(update);
-//                    if (!update.hasMessage()) {
-//                        HandleRequest.sendToTelegram(chatID, "Error: no message received");
-//                    } else {
-//                        handleCommand(chatID, getText(update));
-//                    }
-//
-//            System.out.println("done");
-//            System.out.println(req.body());
-//                    System.out.println(req.headers());
-//                    res.status(200);//shorthand for good
-//                    return res;
-//        }
-//        );
-
-//        String outMess = Message.getMessage("routes", BusInfo.getRoutes());
-//        System.out.println(Message.getMessage("routes", BusInfo.getRoutes()));
-//        System.out.println(outMess);
-//        List<NextTripRoute> ntr = BusInfo.getRoutes();
-//        StringBuffer mess = new StringBuffer();
-//        for (NextTripRoute r : (List<NextTripRoute>) ntr) {
-//            mess.append("Route Num: " + r.getRoute() + "\t" + " Description: " + r.getDescription() + "\n");
-//        }
-//        System.out.println(mess.toString());
-//        BusInfo bus = new BusInfo();
 //        System.out.println(bus.getDepartures("17025"));
 //        System.out.println(bus.getDepartureTimes("5", "4", "7SOL"));
 //        System.out.println(bus.getStops("5", "4"));
 //        System.out.println(bus.getRoutes());
 //        System.out.println(bus.getDirections("5"));
 
-//        System.out.println(Message.getMessage("departures", BusInfo.getDepartures("17025")));
-//        System.out.println(TelegramInfo.getUpMess());
     }
+
 
 
     private static void handleCommand(String chatID, String text) {
@@ -111,10 +71,12 @@ public class MTBotMain {
                 retMess = "Unrecognized command, please resend command with appropriate inputs";
         }
         String[] lines = retMess.split("\n", 6);
-        for (int i = 0; i < 5; i++) {
-            System.out.println(lines[1]);
-            HandleRequest.sendToTelegram(chatID, lines[i]);
-        }
+//        for (int i = 0; i < 5; i++) {
+//            System.out.println(lines[1]);
+//            HandleRequest.sendToTelegram(chatID, lines[i]);
+//        }
+        HandleRequest.sendToTelegram(chatID, lines[1]);
+
     }
 
     private static String getDepartures(String[] reqArr) {

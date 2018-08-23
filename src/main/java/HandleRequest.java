@@ -100,17 +100,17 @@ public class HandleRequest {
     }
 
 
-    public static boolean hasUpdates() {
-        try {
-            URL url = new URL(WEBHOOK_INFO_URL);
-            Boolean hasMoreUpdates;
-            webhookSetup(url);
-            //get json and check that "pending_update_count" is zero.
-            //if not then return true
-            return true;
-        } catch (IOException e) {
-            System.out.println("Error: failed to check for updates");
-            e.printStackTrace();
-        }
-    }
+//    public static boolean hasUpdates() {
+//        try {
+//            URL url = new URL(WEBHOOK_INFO_URL);
+//            Boolean hasMoreUpdates;
+//            webhookSetup(url);
+//            //get json and check that "pending_update_count" is zero.
+//            //if not then return true
+//            return true;
+//        } catch (IOException e) {
+//            System.out.println("Error: failed to check for updates");
+//            e.printStackTrace();
+//        }
+//    }
 }
