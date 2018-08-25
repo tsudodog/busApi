@@ -21,7 +21,6 @@ public class MTBotMain {
         post("/mtbotmain", (req, res) -> {
                     Gson gson = new GsonBuilder().setPrettyPrinting().create();
                     Update update = gson.fromJson(req.body(), Update.class);
-                    System.out.println(update.getMessage().getText());
                     String chatID = getChatID(update);
                     if (!update.hasMessage()) {
                         HandleRequest.sendToTelegram(chatID, "Error: no message received");
@@ -62,9 +61,10 @@ public class MTBotMain {
                 break;
         }
         String[] lines = retMess.split("\n", 5);
+//        String[] lines = retMess.split("\n");
         HandleRequest.sendToTelegram(chatID, lines[0]);
         for (int i = 1; i < lines.length; i++) {
-            System.out.println(lines[1]);
+            System.out.println(lines[i]);
             HandleRequest.sendToTelegram(chatID, lines[i]);
         }
     }

@@ -11,7 +11,7 @@ public class HandleRequest {
     private static final String TELEGRAM_SEND_MESSAGE_URL = "https://api.telegram.org/bot526452962:AAHN2Eu_oCVHevipOgearrFLRMCt-jOPYjA/sendMessage?chat_id=";
     private static final String DEL_WEBHOOK_URL = "https://api.telegram.org/bot526452962:AAHN2Eu_oCVHevipOgearrFLRMCt-jOPYjA/deleteWebhook";
     private static final String BOT_TOKEN = "526452962:AAHN2Eu_oCVHevipOgearrFLRMCt-jOPYjA";
-    private static final String SET_WEBHOOK_URL = "https://api.telegram.org/bot526452962:AAHN2Eu_oCVHevipOgearrFLRMCt-jOPYjA/setWebhook?url=https://5faf1de7.ngrok.io/mtbotmain";
+    private static final String SET_WEBHOOK_URL = "https://api.telegram.org/bot526452962:AAHN2Eu_oCVHevipOgearrFLRMCt-jOPYjA/setWebhook?url=https://a8051178.ngrok.io/mtbotmain";
     private static final String WEBHOOK_INFO_URL = "https://api.telegram.org/bot526452962:AAHN2Eu_oCVHevipOgearrFLRMCt-jOPYjA/getWebhookInfo";
 
     /**
@@ -63,6 +63,7 @@ public class HandleRequest {
             String mess = chat_id + "&text=" + message ;
             URL url = new URL(TELEGRAM_SEND_MESSAGE_URL.concat(mess));
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("POST");
             con.getInputStream();
             con.disconnect();
         } catch (IOException e) {
