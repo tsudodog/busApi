@@ -18,6 +18,11 @@ public class MTBotMain {
      */
     public static void main(String[] args) {
         port(80);
+        get("/", (req, res) -> {
+            res.body("<h1>HELLO WORLD</h1>");
+            res.status(200);
+            return res;
+        });
         get("/helloWorld", (req, res) -> {
             res.body("<h1>HELLO WORLD</h1>");
             res.status(200);
