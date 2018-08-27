@@ -5,7 +5,7 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import static spark.Spark.*;
 
-public class MTBotMain {
+public class Main {
 
     /**
      * Bot Name: TCMetroTransitBot
