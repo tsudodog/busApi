@@ -17,7 +17,7 @@ public class MTBotMain {
      * @param args
      */
     public static void main(String[] args) {
-        port(9000);
+        port(80);
         get("/helloWorld", (req, res) -> {
             res.body("<h1>HELLO WORLD</h1>");
             res.status(200);
