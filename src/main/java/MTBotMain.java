@@ -18,6 +18,11 @@ public class MTBotMain {
      */
     public static void main(String[] args) {
         port(9000);
+        get("/helloWorld", (req, res) -> {
+            res.body("<h1>HELLO WORLD</h1>");
+            res.status(200);
+            return res;
+        });
         post("/mtbotmain", (req, res) -> {
                     Gson gson = new GsonBuilder().setPrettyPrinting().create();
                     Update update = gson.fromJson(req.body(), Update.class);
