@@ -22,6 +22,7 @@ public class Main {
         if (processBuilder.environment().get("PORT") != null) {
             Integer i =  Integer.parseInt(processBuilder.environment().get("PORT"));
             System.out.println(i);
+            return i;
         }
         return 4567; //return default port if heroku-port isn't set (i.e. on localhost)
     }
@@ -33,25 +34,25 @@ public class Main {
             res.status(200);
             return res;
         });
-        get("/helloWorld", (req, res) -> {
-            res.body("<h1>HELLO WORLD</h1>");
-            res.status(200);
-            return res;
-        });
-        post("/mtbotmain", (req, res) -> {
-                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                    Update update = gson.fromJson(req.body(), Update.class);
-                    String chatID = getChatID(update);
-                    if (!update.hasMessage()) {
-                        HandleRequest.sendToTelegram(chatID, "Error: no message received");
-                    } else {
-                        handleCommand(chatID, getText(update));
-                    }
-                    System.out.println(req.headers());
-                    res.status(200);
-                    return res;
-        }
-        );
+//        get("/helloWorld", (req, res) -> {
+//            res.body("<h1>HELLO WORLD</h1>");
+//            res.status(200);
+//            return res;
+//        });
+//        post("/mtbotmain", (req, res) -> {
+//                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//                    Update update = gson.fromJson(req.body(), Update.class);
+//                    String chatID = getChatID(update);
+//                    if (!update.hasMessage()) {
+//                        HandleRequest.sendToTelegram(chatID, "Error: no message received");
+//                    } else {
+//                        handleCommand(chatID, getText(update));
+//                    }
+//                    System.out.println(req.headers());
+//                    res.status(200);
+//                    return res;
+//        }
+//        );
     }
 
 
