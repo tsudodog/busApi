@@ -23,7 +23,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                $target/libs
+                                $target/
                             </outputDirectory>
                         </configuration>
                     </execution>
@@ -45,8 +45,6 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classPathPrefix>libs</classPathPrefix>
                             <mainClass>sparkServer.busAPI.src.java.Main</mainClass>
                         </manifest>
                     </archive>
