@@ -23,7 +23,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                $target/
+                                target/
                             </outputDirectory>
                         </configuration>
                     </execution>
