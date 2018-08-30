@@ -28,17 +28,17 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        port(getHerokuAssignedPort());
+//        port(getHerokuAssignedPort());
+//        get("/", (req, res) -> {
+//            res.body("<h1>HELLO WORLD</h1>");
+//            res.status(200);
+//            return res;
+//        });
         get("/", (req, res) -> {
             res.body("<h1>HELLO WORLD</h1>");
             res.status(200);
             return res;
         });
-//        get("/helloWorld", (req, res) -> {
-//            res.body("<h1>HELLO WORLD</h1>");
-//            res.status(200);
-//            return res;
-//        });
 //        post("/mtbotmain", (req, res) -> {
 //                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
 //                    Update update = gson.fromJson(req.body(), Update.class);
