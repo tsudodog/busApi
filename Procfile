@@ -1,1 +1,1 @@
-web: java -jar target/sparkServer-0.0.jar
+web: java -jar target/libs/sparkServer-0.0.jar
