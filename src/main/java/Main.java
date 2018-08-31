@@ -28,7 +28,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-//        port(getHerokuAssignedPort());
+        port(getHerokuAssignedPort());
 //        get("/", (req, res) -> {
 //            res.body("<h1>HELLO WORLD</h1>");
 //            res.status(200);
