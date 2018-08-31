@@ -29,31 +29,20 @@ public class Main {
 
     public static void main(String[] args) {
         port(getHerokuAssignedPort());
-//        get("/", (req, res) -> {
-//            res.body("<h1>HELLO WORLD</h1>");
-//            res.status(200);
-//            return res;
-//        });
-//        get("/", (req, res) -> {
-//            res.body("<h1>HELLO WORLD</h1>");
-//            res.status(200);
-//            return res;
-//        });
         post("/mtbotmain", (req, res) -> {
-                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                    Update update = gson.fromJson(req.body(), Update.class);
-                    String chatID = getChatID(update);
-                    if (!update.hasMessage()) {
-                        HandleRequest.sendToTelegram(chatID, "Error: no message received");
-                    } else {
-                        handleCommand(chatID, getText(update));
-                    }
-                    System.out.println(req.headers());
-                    res.body("<h1>MetroTransitBot Server</h1>");
-                    res.status(200);
-                    return res;
-        }
-        );
+            res.body("<h1>MetroTransitBot Server</h1>");
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            Update update = gson.fromJson(req.body(), Update.class);
+            String chatID = getChatID(update);
+            if (!update.hasMessage()) {
+                HandleRequest.sendToTelegram(chatID, "Error: no message received");
+            } else {
+                handleCommand(chatID, getText(update));
+            }
+            System.out.println(req.headers());
+            res.status(200);
+            return res;
+        });
     }
 
 
@@ -85,7 +74,7 @@ public class Main {
         String[] lines = retMess.split("\n", 5);
 //        String[] lines = retMess.split("\n");
         HandleRequest.sendToTelegram(chatID, lines[0]);
-        for (int i = 1; i < lines.length; i++) {
+        for (int i = 1; i < lines.length-1; i++) {
             System.out.println(lines[i]);
             HandleRequest.sendToTelegram(chatID, lines[i]);
         }
