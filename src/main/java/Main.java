@@ -32,12 +32,12 @@ public class Main {
         get("/", (req, res) -> {
             res.body("<h1>HELLO WORLD</h1>");
             res.status(200);
-            return res;
+            return "Hello World";
         });
         get("/helloWorld", (req, res) -> {
             res.body("<h1>HELLO WORLD</h1>");
             res.status(200);
-            return res;
+            return "<h1>HELLO WORLD</h1>";
         });
         post("/mtbotmain", (req, res) -> {
                     Gson gson = new GsonBuilder().setPrettyPrinting().create();
