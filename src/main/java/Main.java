@@ -49,6 +49,7 @@ public class Main {
                         handleCommand(chatID, getText(update));
                     }
                     System.out.println(req.headers());
+                    res.body("<h1>MetroTransitBot Server</h1>");
                     res.status(200);
                     return res;
         }
