@@ -30,7 +30,7 @@ public class Main {
     public static void main(String[] args) {
         port(getHerokuAssignedPort());
         post("/mtbotmain", (req, res) -> {
-            res.body("<h1>MetroTransitBot Server</h1>");
+            res.body("MetroTransitBot Server");
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             Update update = gson.fromJson(req.body(), Update.class);
             String chatID = getChatID(update);
