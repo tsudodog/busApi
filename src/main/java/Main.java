@@ -21,7 +21,8 @@ public class Main {
         ProcessBuilder processBuilder = new ProcessBuilder();
         if (processBuilder.environment().get("PORT") != null) {
             Integer i =  Integer.parseInt(processBuilder.environment().get("PORT"));
-            System.out.println(i);
+            System.out.println("\n\nPORTNUMBER:\t"+i+"\n\n");
+            return i;
         }
         return 4567; //return default port if heroku-port isn't set (i.e. on localhost)
     }
